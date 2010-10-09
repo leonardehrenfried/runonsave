@@ -33,12 +33,27 @@ def main ():
   cwd = os.getcwd()
   last_run=os.path.getmtime(cwd)
   while(True):
-    last_modified=os.path.getmtime(cwd)
+    last_modified=get_last_modified(cwd)
     if (last_modified > last_run):
       print "*** Save detected - running command ***"
       subprocess.Popen(['pdflatex', 'cv.tex', ])
       last_run=last_modified
     time.sleep(SCAN_INTERVAL)
+
+def get_last_modified(current_dir):
+    """Recurses though a directory tree and finds the newest last modified date"""
+    last_modified=os.path.getmtime(current_dir)
+    print "checking %s: " % current_dir
+    subdirs=os.listdir(current_dir)
+
+    for subdir in subdirs:
+      if(os.path.isdir(subdir)):
+        temp_last_modified=get_last_modified(subdir)
+        if(temp_last_modified>last_modified):
+          last_modified=temp_last_modified
+
+    return last_modified
+
 
 if __name__ == '__main__':
   main()
