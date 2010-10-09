@@ -28,6 +28,7 @@ import time
 import re
 
 SCAN_INTERVAL=10
+EXCLUDES=['.git', '.hg', 'CVS']
 
 def main ():
   cwd = os.getcwd()
@@ -43,17 +44,25 @@ def main ():
 def get_last_modified(current_dir):
     """Recurses though a directory tree and finds the newest last modified date"""
     last_modified=os.path.getmtime(current_dir)
-    print "checking %s: " % current_dir
+    #print "checking %s: " % current_dir
     subdirs=os.listdir(current_dir)
+    subdirs = [subdir for subdir in subdirs if should_check(subdir)]
 
     for subdir in subdirs:
-      if(os.path.isdir(subdir)):
-        temp_last_modified=get_last_modified(subdir)
-        if(temp_last_modified>last_modified):
-          last_modified=temp_last_modified
+      temp_last_modified=get_last_modified(subdir)
+      if(temp_last_modified>last_modified):
+        last_modified=temp_last_modified
 
     return last_modified
 
+def should_check(path):
+  """Checks if path should be recursively searched. Exludes files and SCM dirs"""
+  if(os.path.isdir(path)):
+    basename=os.path.basename(path)
+    if basename not in EXCLUDES:
+      return True
+
+  return False
 
 if __name__ == '__main__':
   main()
