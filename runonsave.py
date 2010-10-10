@@ -2,19 +2,15 @@
 """
 SYNOPSIS
 
-    TODO helloworld [-h,--help] [-v,--verbose] [--version]
+    runonsave.py COMMAND 
 
 DESCRIPTION
 
-    Runs a command when a file in the current working directory is changed
+    Runs a command when a file in the current working directory or its subdirectory is changed.
 
 EXAMPLES
 
-    TODO: Show some examples of how to use this script.
-
-EXIT STATUS
-
-    TODO: List exit codes
+    runonsave.py pdflatex cv.tex 
 
 AUTHOR
 
@@ -24,7 +20,7 @@ AUTHOR
 
 import os, sys, subprocess, time
 
-SCAN_INTERVAL=10
+SCAN_INTERVAL=5
 EXCLUDES=['.git', '.hg', 'CVS']
 
 def main ():
@@ -33,7 +29,6 @@ def main ():
   while(True):
     last_modified=get_last_modified(cwd)
     if (last_modified > last_run):
-      print "*** Save detected - running command ***"
       args=sys.argv
       
       #strip out the python command
@@ -41,6 +36,7 @@ def main ():
         args=args[1:]
       args=args[1:]
 
+      print "*** Save detected: running %s ***" % " ".join(args)
       subprocess.Popen(args)
       last_run=last_modified
     time.sleep(SCAN_INTERVAL)
