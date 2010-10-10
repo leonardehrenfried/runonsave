@@ -21,7 +21,7 @@ AUTHOR
 import os, sys, subprocess, time
 
 SCAN_INTERVAL=5
-EXCLUDES=['.git', '.hg', 'CVS']
+EXCLUDES=['.git', '.hg', '.svn', 'CVS']
 
 def main ():
   cwd = os.getcwd()
