@@ -21,7 +21,7 @@ AUTHOR
 import os, sys, subprocess, time
 
 SCAN_INTERVAL=5
-EXCLUDES=['.git', '.hg', '.svn', 'CVS']
+EXCLUDES=['.git', '.hg', '.svn', 'CVS','target' ]
 
 def main ():
   cwd = os.getcwd()
@@ -43,14 +43,17 @@ def main ():
 
 def get_last_modified(current_dir):
     """Recurses though a directory tree and finds the newest last modified date"""
+    #print current_dir 
     last_modified=os.path.getmtime(current_dir)
-    subdirs=os.listdir(current_dir)
-    subdirs = [subdir for subdir in subdirs if should_check(current_dir+"/"+subdir)]
-    
-    for subdir in subdirs:
-      temp_last_modified=get_last_modified(current_dir+"/"+subdir)
-      if(temp_last_modified>last_modified):
-        last_modified=temp_last_modified
+    # if it is a directory recurse into it 
+    if os.path.isdir(current_dir):
+      subdirs=os.listdir(current_dir)
+      subdirs = [subdir for subdir in subdirs if should_check(current_dir+"/"+subdir)]
+
+      for subdir in subdirs:
+        temp_last_modified=get_last_modified(current_dir+"/"+subdir)
+        if(temp_last_modified>last_modified):
+          last_modified=temp_last_modified
 
     return last_modified
 
@@ -60,8 +63,9 @@ def should_check(path):
     basename=os.path.basename(path)
     if basename not in EXCLUDES:
       return True
-
-  return False
+    else:
+      return False
+  return True 
 
 if __name__ == '__main__':
   main()
