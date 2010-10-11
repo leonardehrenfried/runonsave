@@ -45,10 +45,10 @@ def get_last_modified(current_dir):
     """Recurses though a directory tree and finds the newest last modified date"""
     last_modified=os.path.getmtime(current_dir)
     subdirs=os.listdir(current_dir)
-    subdirs = [subdir for subdir in subdirs if should_check(subdir)]
-
+    subdirs = [subdir for subdir in subdirs if should_check(current_dir+"/"+subdir)]
+    
     for subdir in subdirs:
-      temp_last_modified=get_last_modified(subdir)
+      temp_last_modified=get_last_modified(current_dir+"/"+subdir)
       if(temp_last_modified>last_modified):
         last_modified=temp_last_modified
 
