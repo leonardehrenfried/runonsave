@@ -37,6 +37,7 @@ def main ():
       args=args[1:]
 
       print "*** Save detected: running %s ***" % " ".join(args)
+	  print "*** Finished ***"
       subprocess.Popen(args)
       last_run=last_modified
     time.sleep(SCAN_INTERVAL)
